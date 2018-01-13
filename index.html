@@ -1,0 +1,88 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+	<meta charset="UTF-8" />
+    <title>Test jeux avec Phaser.io</title>
+	<script type="text/javascript" src="phaser.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+<script type="text/javascript">
+var game = new Phaser.Game("100%", "100%", Phaser.CANVAS, '', { preload: preload, create: create, update: update });
+		function preload() {
+			game.load.image('sky', 'assets/sky.png');
+		 	game.load.image('sky', 'assets/sky.png');
+		    game.load.image('ground', 'assets/platform.png');
+		    game.load.image('star', 'assets/star.png');
+		    game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+		}
+		function create() {
+			game.physics.startSystem(Phaser.Physics.ARCADE);
+			game.stage.backgroundColor = "#0000";
+			platforms = game.add.group();
+			var x = platforms.create(0, game.world.height-40, 'ground');
+			var y = platforms.create(game.world.height-10, 500, 'ground');
+			var p = platforms.create(game.world.height+300, 300, 'ground');
+			var sulli = game.add.sprite(game.world.height+450, 270, 'star');
+			p.scale.setTo(0.5,0.5);
+			game.physics.arcade.enable(p);
+			p.body.immovable = true;
+			y.scale.setTo(0.5,0.5);
+			game.physics.arcade.enable(y);
+			y.body.immovable = true;
+			x.scale.setTo(game.world.width,2);
+			game.physics.arcade.enable(x);
+			x.body.immovable = true;
+			// The player and its settings
+		    player = game.add.sprite(32, game.world.height - 150, 'dude');
+		    //  We need to enable physics on the player
+		    game.physics.arcade.enable(player);
+		    //  Player physics properties. Give the little guy a slight bounce.
+		    player.body.bounce.y = 0.2;
+		    player.body.gravity.y = 300;
+		    player.body.collideWorldBounds = true;
+		    //  Our two animations, walking left and right.
+		    player.animations.add('left', [0, 1, 2, 3], 10, true);
+		    player.animations.add('right', [5, 6, 7, 8], 10, true);
+		    cursors = game.input.keyboard.createCursorKeys();
+				}
+
+		function update() {
+			game.physics.arcade.collide(player, platforms);
+					 //  Reset the players velocity (movement)
+		    player.body.velocity.x = 0;
+		    if (cursors.left.isDown)
+		    {
+		        //  Move to the left
+		        player.body.velocity.x = -150;
+
+		        player.animations.play('left');
+		    }
+		    else if (cursors.right.isDown)
+		    {
+		        //  Move to the right
+		        player.body.velocity.x = 150;
+
+		        player.animations.play('right');
+		    }
+		    else
+		    {
+		        //  Stand still
+		        player.animations.stop();
+
+		        player.frame = 4;
+		    }
+		    //  Allow the player to jump if they are touching the ground.
+		    if (cursors.up.isDown && player.body.touching.down)
+		    {
+		        player.body.velocity.y = -500;
+		    }
+		}
+</script>
+
+</body>
+</html>
